@@ -38,6 +38,14 @@ with st.form(key="Article Creation Form", clear_on_submit=True):
     submitted = st.form_submit_button("Save article")
     if submitted:
         try:
+
+            if any(yt_link in article_url for yt_link in ["youtube", "youtu.be"]) and (
+                "video" not in selected_tags
+            ):
+                selected_tags.append("video")
+            elif ("twitter" in article_url) and ("twitter" not in selected_tags):
+                selected_tags.append("twitter")
+
             saved_articles_list.create_task(
                 Task(
                     name=article_name,

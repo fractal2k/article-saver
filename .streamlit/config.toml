@@ -3,7 +3,7 @@ gatherUsageStats=false
 
 [theme]
 primaryColor="#1DC2A4"
-backgroundColor="#FFFFFF"
-secondaryBackgroundColor="#F0F2F6"
+backgroundColor="DEF4F0"
+secondaryBackgroundColor="#C9E0DC"
 textColor='#010D1C'
 font="sans serif"
