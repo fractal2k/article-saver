@@ -43,7 +43,9 @@ with st.form(key="Article Creation Form", clear_on_submit=True):
                 "video" not in selected_tags
             ):
                 selected_tags.append("video")
-            elif ("twitter" in article_url) and ("twitter" not in selected_tags):
+            elif any(
+                twitter_link in article_url for twitter_link in ["twitter", "t.co"]
+            ) and ("twitter" not in selected_tags):
                 selected_tags.append("twitter")
 
             saved_articles_list.create_task(
