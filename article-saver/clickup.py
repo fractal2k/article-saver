@@ -28,16 +28,18 @@ class Space(ClickupObject):
     def __post_init__(self):
         super().__init__()
 
-        self.space_url = self.root_url + f'space/{self.id}/'
-        self.tag_url = self.space_url + 'tag'
-    
+        self.space_url = self.root_url + f"space/{self.id}/"
+        self.tag_url = self.space_url + "tag"
+
     def get_tags(self):
         response = requests.get(self.tag_url, headers=self.headers)
 
         if response.status_code != 200:
-            raise ClickUpException(response=response, message='Failed to retrieve tags.')
-        
-        return [Tag(**tag) for tag in response.json()['tags']]
+            raise ClickUpException(
+                response=response, message="Failed to retrieve tags."
+            )
+
+        return [Tag(**tag) for tag in response.json()["tags"]]
 
 
 class List(ClickupObject):
@@ -49,11 +51,15 @@ class List(ClickupObject):
 
     def create_task(self, task):
         response = requests.post(
-            self.task_url, json={key:value for key, value in task.__dict__.items() if value is not None}, headers=self.headers
+            self.task_url,
+            json={
+                key: value for key, value in task.__dict__.items() if value is not None
+            },
+            headers=self.headers,
         )
 
         if response.status_code != 200:
-            raise ClickUpException(response=response, message='Task creation failed.')
+            raise ClickUpException(response=response, message="Task creation failed.")
 
         response_data = response.json()
 
@@ -67,9 +73,9 @@ class List(ClickupObject):
         )
 
         if response.status_code != 200:
-            raise ClickUpException(response=response, message='Task retrieval failed.')
-        
-        return [Task(**task) for task in response.json()['tasks']]
+            raise ClickUpException(response=response, message="Task retrieval failed.")
+
+        return [Task(**task) for task in response.json()["tasks"]]
 
 
 @dataclass
@@ -81,11 +87,11 @@ class Task(ClickupObject):
     description: Optional[str] = None
     status: Optional[dict] = "Open"
     orderindex: Optional[str] = None
-    date_created: Optional[int] = None,
-    date_updated: Optional[int] = None,
-    date_closed: Optional[int] = None,
-    date_done: Optional[int] = None,
-    archived: bool = False,
+    date_created: Optional[int] = (None,)
+    date_updated: Optional[int] = (None,)
+    date_closed: Optional[int] = (None,)
+    date_done: Optional[int] = (None,)
+    archived: bool = (False,)
     creator: Optional[dict] = None
     assignees: list = field(default_factory=list)
     watchers: list = field(default_factory=list)
@@ -123,11 +129,11 @@ class Task(ClickupObject):
 
     @staticmethod
     def custom_fields(fields):
-        id_map = {
-            'URL': os.getenv('CLICKUP_URL_FIELD_ID')
-        }
+        id_map = {"URL": os.getenv("CLICKUP_URL_FIELD_ID")}
 
-        return [{'id': id_map[field['name']], 'value': field['value']} for field in fields]
+        return [
+            {"id": id_map[field["name"]], "value": field["value"]} for field in fields
+        ]
 
 
 @dataclass
@@ -135,10 +141,11 @@ class Tag(ClickupObject):
     name: str
     tag_fg: str
     tag_bg: str
+    project_id: str
     creator: Optional[str] = None
 
     def __post_init__(self):
         super().__init__()
-    
+
     def __repr__(self):
         return f"{self.__class__.__name__}(name='{self.name}')"
